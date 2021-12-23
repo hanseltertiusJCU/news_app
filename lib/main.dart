@@ -79,7 +79,7 @@ class _ArticleListState extends State<ArticleListWidget> {
       body: FutureBuilder(
         future: getArticlesData(),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
-          return const ArticleItemWidget();
+          return ArticleItemWidget(snapshot: snapshot);
         },
       ),
     );
@@ -108,7 +108,9 @@ class LoadingDataWidget extends StatelessWidget {
 }
 
 class ArticleItemWidget extends StatelessWidget {
-  const ArticleItemWidget({Key? key, var snapshot}) : super(key: key);
+  final AsyncSnapshot? snapshot;
+
+  const ArticleItemWidget({Key? key, this.snapshot}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -125,10 +127,9 @@ class ArticleItemWidget extends StatelessWidget {
                     topRight: Radius.circular(4.0)),
                 child: FadeInImage.assetNetwork(
                     placeholder: 'images/no_image.jpg',
-                    image:
-                        'https://cdns.klimg.com/bola.net/library/upload/21/2021/10/645x430/mu-cavani_617f6ed.jpg'),
+                    image: snapshot?.data[0].urlToImage),
               ),
-              const Text('Edinson Cavani')
+              Text(snapshot?.data[0].title)
             ],
           ),
           onTap: () {
