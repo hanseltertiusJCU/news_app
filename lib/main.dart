@@ -2,6 +2,8 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:news_app/model/article_item.dart';
+import 'package:news_app/model/source_data.dart';
 
 void main() {
   runApp(const MyApp());
@@ -41,7 +43,32 @@ class _ArticleListState extends State<ArticleListWidget> {
 
     var jsonData = jsonDecode(response.body);
 
-    print(jsonData);
+    List<ArticleItem> articles = [];
+
+    if (jsonData['status'] == 'ok') {
+      for (var article in jsonData['articles']) {
+        var source = article['source'];
+
+        SourceData sourceData =
+            SourceData(id: source['id'], name: source['name']);
+
+        ArticleItem articleItem = ArticleItem(
+            source: sourceData,
+            author: article['author'],
+            title: article['title'],
+            description: article['description'],
+            url: article['url'],
+            urlToImage: article['urlToImage'],
+            publishedAt: article['publishedAt'],
+            content: article['content']);
+
+        articles.add(articleItem);
+      }
+
+      return articles;
+    } else {
+      return null;
+    }
   }
 
   @override

@@ -7,7 +7,7 @@ class SourceData {
       }
    */
 
-  final int? id;
+  final String? id;
   final String? name;
 
   SourceData({this.id, this.name});
