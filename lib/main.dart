@@ -1,10 +1,12 @@
 import 'dart:convert';
 
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:news_app/model/article_item.dart';
 import 'package:news_app/model/source_data.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 void main() {
   runApp(const MyApp());
@@ -98,7 +100,7 @@ class LoadingDataWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(8.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: const <Widget>[
@@ -171,7 +173,10 @@ class ArticleItemWidget extends StatelessWidget {
             ],
           ),
           onTap: () {
-            debugPrint('Test');
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => ArticleItemDetailWidget(item: item)));
           },
         ),
       ),
@@ -179,15 +184,89 @@ class ArticleItemWidget extends StatelessWidget {
   }
 }
 
-// todo : article item detail widget
 class ArticleItemDetailWidget extends StatelessWidget {
+  final ArticleItem item;
+
   const ArticleItemDetailWidget({
     Key? key,
+    required this.item,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
-    throw UnimplementedError();
+    return Scaffold(
+      appBar: AppBar(title: Text(item.title ?? "")),
+      body: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: SingleChildScrollView(
+            child: Column(
+              children: <Widget>[
+                Padding(
+                    padding: const EdgeInsets.only(bottom: 4.0),
+                    child: Text(item.title ?? "",
+                        style: const TextStyle(
+                            fontWeight: FontWeight.w500, fontSize: 24.0))),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 4.0),
+                  child: Text(
+                    item.author ?? "",
+                    style: const TextStyle(fontWeight: FontWeight.w500),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 4.0),
+                  child: Text(
+                    item.publishedAt ?? "",
+                    style: const TextStyle(fontStyle: FontStyle.italic),
+                  ),
+                ),
+                Padding(
+                    padding: const EdgeInsets.only(bottom: 4.0),
+                    child: CachedNetworkImage(
+                      imageUrl: item.urlToImage.toString(),
+                      imageBuilder: (context, imageProvider) => Container(
+                          height: 200,
+                          decoration: BoxDecoration(
+                              image: DecorationImage(
+                                  image: imageProvider, fit: BoxFit.fitWidth))),
+                      placeholder: (context, url) =>
+                          const LinearProgressIndicator(
+                        value: null,
+                      ),
+                      errorWidget: (context, url, error) =>
+                          const Icon(Icons.error),
+                    )),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 4.0),
+                  child: Text(
+                    item.description ?? "",
+                    style: const TextStyle(fontStyle: FontStyle.italic),
+                  ),
+                ),
+                Padding(
+                    padding: const EdgeInsets.only(bottom: 4.0),
+                    child: Text(item.content ?? "")),
+                RichText(
+                    text: TextSpan(
+                        text: "Read More...",
+                        style: const TextStyle(
+                          color: Colors.blue,
+                          decoration: TextDecoration.underline,
+                          fontSize: 16,
+                        ),
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = () async {
+                            var url = item.url ?? "";
+
+                            if (await canLaunch(url)) {
+                              await launch(url);
+                            } else {
+                              throw 'Could not launch $url';
+                            }
+                          })),
+              ],
+            ),
+          )),
+    );
   }
 }
