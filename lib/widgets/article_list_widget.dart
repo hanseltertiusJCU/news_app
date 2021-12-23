@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:news_app/main.dart';
 import 'package:news_app/model/article_item.dart';
 import 'package:news_app/model/source_data.dart';
+import 'package:news_app/widgets/article_list_view_widget.dart';
 import 'package:news_app/widgets/loading_data_widget.dart';
 
 class ArticleListWidget extends StatefulWidget {

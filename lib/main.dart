@@ -28,66 +28,6 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class ArticleListViewWidget extends StatelessWidget {
-  final AsyncSnapshot snapshot;
-
-  const ArticleListViewWidget({Key? key, required this.snapshot})
-      : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return ListView.separated(
-        padding: const EdgeInsets.all(8.0),
-        itemCount: snapshot.data.length,
-        separatorBuilder: (context, index) =>
-            const Padding(padding: EdgeInsets.symmetric(vertical: 8.0)),
-        itemBuilder: (context, index) {
-          return ArticleItemWidget(item: snapshot.data[index]);
-        });
-  }
-}
-
-class ArticleItemWidget extends StatelessWidget {
-  final ArticleItem item;
-
-  const ArticleItemWidget({Key? key, required this.item}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      child: Card(
-        elevation: 4.0,
-        child: InkWell(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              ClipRRect(
-                  borderRadius: const BorderRadius.only(
-                      topLeft: Radius.circular(4.0),
-                      topRight: Radius.circular(4.0)),
-                  child: Image(
-                    image: NetworkImageWithRetry(item.urlToImage ??
-                        'http://diskannak.kabgarut.com/dhaassets/backend/images/no_image.jpg'),
-                  )),
-              Text(
-                item.title ?? "",
-                style: const TextStyle(
-                    fontSize: 24.0, fontWeight: FontWeight.bold),
-              )
-            ],
-          ),
-          onTap: () {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => ArticleItemDetailWidget(item: item)));
-          },
-        ),
-      ),
-    );
-  }
-}
-
 class ArticleItemDetailWidget extends StatelessWidget {
   final ArticleItem item;
 
