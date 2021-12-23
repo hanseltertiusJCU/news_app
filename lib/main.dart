@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:news_app/model/article_item.dart';
 import 'package:news_app/model/source_data.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 void main() {
   runApp(const MyApp());
@@ -113,71 +114,80 @@ class LoadingDataWidget extends StatelessWidget {
 }
 
 class ArticleListViewWidget extends StatelessWidget {
-  final AsyncSnapshot? snapshot;
+  final AsyncSnapshot snapshot;
 
-  const ArticleListViewWidget({Key? key, this.snapshot}) : super(key: key);
+  const ArticleListViewWidget({Key? key, required this.snapshot})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    if (snapshot?.data == null) {
-      return const SizedBox(width: 0.0, height: 0.0);
-    } else {
-      return ListView.separated(
-          padding: const EdgeInsets.all(8.0),
-          itemCount: snapshot?.data.length,
-          separatorBuilder: (context, index) =>
-              const Padding(padding: EdgeInsets.symmetric(vertical: 8.0)),
-          itemBuilder: (context, index) {
-            return ArticleItemWidget(item: snapshot?.data[index]);
-          });
-    }
+    return ListView.separated(
+        padding: const EdgeInsets.all(8.0),
+        itemCount: snapshot.data.length,
+        separatorBuilder: (context, index) =>
+            const Padding(padding: EdgeInsets.symmetric(vertical: 8.0)),
+        itemBuilder: (context, index) {
+          return ArticleItemWidget(item: snapshot.data[index]);
+        });
   }
 }
 
 class ArticleItemWidget extends StatelessWidget {
-  final dynamic item;
+  final ArticleItem item;
 
-  const ArticleItemWidget({Key? key, this.item}) : super(key: key);
+  const ArticleItemWidget({Key? key, required this.item}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    if (item == null) {
-      return const SizedBox(
-        width: 0.0,
-        height: 0.0,
-      );
-    } else {
-      return Material(
-        child: Card(
-          elevation: 4.0,
-          child: InkWell(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                ClipRRect(
-                  borderRadius: const BorderRadius.only(
-                      topLeft: Radius.circular(4.0),
-                      topRight: Radius.circular(4.0)),
-                  child: FadeInImage.assetNetwork(
-                    placeholder: 'images/no_image.jpg',
-                    image: item.urlToImage,
-                    height: 200,
-                    fit: BoxFit.fill,
+    return Material(
+      child: Card(
+        elevation: 4.0,
+        child: InkWell(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              ClipRRect(
+                borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(4.0),
+                    topRight: Radius.circular(4.0)),
+                child: CachedNetworkImage(
+                  imageUrl: item.urlToImage.toString(),
+                  imageBuilder: (context, imageProvider) => Container(
+                      height: 200,
+                      decoration: BoxDecoration(
+                          image: DecorationImage(
+                              image: imageProvider, fit: BoxFit.fitWidth))),
+                  placeholder: (context, url) => const LinearProgressIndicator(
+                    value: null,
                   ),
+                  errorWidget: (context, url, error) => const Icon(Icons.error),
                 ),
-                Text(
-                  item.title,
-                  style: const TextStyle(
-                      fontSize: 24.0, fontWeight: FontWeight.bold),
-                )
-              ],
-            ),
-            onTap: () {
-              debugPrint('Test');
-            },
+              ),
+              Text(
+                item.title ?? "",
+                style: const TextStyle(
+                    fontSize: 24.0, fontWeight: FontWeight.bold),
+              )
+            ],
           ),
+          onTap: () {
+            debugPrint('Test');
+          },
         ),
-      );
-    }
+      ),
+    );
+  }
+}
+
+// todo : article item detail widget
+class ArticleItemDetailWidget extends StatelessWidget {
+  const ArticleItemDetailWidget({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    // TODO: implement build
+    throw UnimplementedError();
   }
 }
