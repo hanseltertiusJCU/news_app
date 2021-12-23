@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_image/network.dart';
-import 'package:news_app/main.dart';
 import 'package:news_app/model/article_item.dart';
+import 'package:news_app/widgets/article_item_detail_widget.dart';
 
 class ArticleItemWidget extends StatelessWidget {
   final ArticleItem item;
