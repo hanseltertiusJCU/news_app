@@ -16,6 +16,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       home: ArticleListWidget(),
     );
@@ -79,7 +80,11 @@ class _ArticleListState extends State<ArticleListWidget> {
       body: FutureBuilder(
         future: getArticlesData(),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
-          return ArticleItemWidget(snapshot: snapshot);
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const LoadingDataWidget();
+          } else {
+            return ArticleListViewWidget(snapshot: snapshot);
+          }
         },
       ),
     );
@@ -107,36 +112,72 @@ class LoadingDataWidget extends StatelessWidget {
   }
 }
 
-class ArticleItemWidget extends StatelessWidget {
+class ArticleListViewWidget extends StatelessWidget {
   final AsyncSnapshot? snapshot;
 
-  const ArticleItemWidget({Key? key, this.snapshot}) : super(key: key);
+  const ArticleListViewWidget({Key? key, this.snapshot}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      child: Card(
-        elevation: 4.0,
-        child: InkWell(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              ClipRRect(
-                borderRadius: const BorderRadius.only(
-                    topLeft: Radius.circular(4.0),
-                    topRight: Radius.circular(4.0)),
-                child: FadeInImage.assetNetwork(
+    if (snapshot?.data == null) {
+      return const SizedBox(width: 0.0, height: 0.0);
+    } else {
+      return ListView.separated(
+          padding: const EdgeInsets.all(8.0),
+          itemCount: snapshot?.data.length,
+          separatorBuilder: (context, index) =>
+              const Padding(padding: EdgeInsets.symmetric(vertical: 8.0)),
+          itemBuilder: (context, index) {
+            return ArticleItemWidget(item: snapshot?.data[index]);
+          });
+    }
+  }
+}
+
+class ArticleItemWidget extends StatelessWidget {
+  final dynamic item;
+
+  const ArticleItemWidget({Key? key, this.item}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    if (item == null) {
+      return const SizedBox(
+        width: 0.0,
+        height: 0.0,
+      );
+    } else {
+      return Material(
+        child: Card(
+          elevation: 4.0,
+          child: InkWell(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                ClipRRect(
+                  borderRadius: const BorderRadius.only(
+                      topLeft: Radius.circular(4.0),
+                      topRight: Radius.circular(4.0)),
+                  child: FadeInImage.assetNetwork(
                     placeholder: 'images/no_image.jpg',
-                    image: snapshot?.data[0].urlToImage),
-              ),
-              Text(snapshot?.data[0].title)
-            ],
+                    image: item.urlToImage,
+                    height: 200,
+                    fit: BoxFit.fill,
+                  ),
+                ),
+                Text(
+                  item.title,
+                  style: const TextStyle(
+                      fontSize: 24.0, fontWeight: FontWeight.bold),
+                )
+              ],
+            ),
+            onTap: () {
+              debugPrint('Test');
+            },
           ),
-          onTap: () {
-            debugPrint('Test');
-          },
         ),
-      ),
-    );
+      );
+    }
   }
 }
