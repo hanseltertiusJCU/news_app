@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:news_app/model/article_item.dart';
 import 'package:news_app/model/source_data.dart';
+import 'package:flutter_image/flutter_image.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -149,22 +150,13 @@ class ArticleItemWidget extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               ClipRRect(
-                borderRadius: const BorderRadius.only(
-                    topLeft: Radius.circular(4.0),
-                    topRight: Radius.circular(4.0)),
-                child: CachedNetworkImage(
-                  imageUrl: item.urlToImage.toString(),
-                  imageBuilder: (context, imageProvider) => Container(
-                      height: 200,
-                      decoration: BoxDecoration(
-                          image: DecorationImage(
-                              image: imageProvider, fit: BoxFit.fitWidth))),
-                  placeholder: (context, url) => const LinearProgressIndicator(
-                    value: null,
-                  ),
-                  errorWidget: (context, url, error) => const Icon(Icons.error),
-                ),
-              ),
+                  borderRadius: const BorderRadius.only(
+                      topLeft: Radius.circular(4.0),
+                      topRight: Radius.circular(4.0)),
+                  child: Image(
+                    image: NetworkImageWithRetry(item.urlToImage ??
+                        'http://diskannak.kabgarut.com/dhaassets/backend/images/no_image.jpg'),
+                  )),
               Text(
                 item.title ?? "",
                 style: const TextStyle(
@@ -222,19 +214,9 @@ class ArticleItemDetailWidget extends StatelessWidget {
                 ),
                 Padding(
                     padding: const EdgeInsets.only(bottom: 4.0),
-                    child: CachedNetworkImage(
-                      imageUrl: item.urlToImage.toString(),
-                      imageBuilder: (context, imageProvider) => Container(
-                          height: 200,
-                          decoration: BoxDecoration(
-                              image: DecorationImage(
-                                  image: imageProvider, fit: BoxFit.fitWidth))),
-                      placeholder: (context, url) =>
-                          const LinearProgressIndicator(
-                        value: null,
-                      ),
-                      errorWidget: (context, url, error) =>
-                          const Icon(Icons.error),
+                    child: Image(
+                      image: NetworkImageWithRetry(item.urlToImage ??
+                          'http://diskannak.kabgarut.com/dhaassets/backend/images/no_image.jpg'),
                     )),
                 Padding(
                   padding: const EdgeInsets.only(bottom: 4.0),
