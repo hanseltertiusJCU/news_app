@@ -6,7 +6,7 @@ import 'package:http/http.dart' as http;
 import 'package:news_app/model/article_item.dart';
 import 'package:news_app/model/source_data.dart';
 import 'package:flutter_image/flutter_image.dart';
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:news_app/widgets/loading_data_widget.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 void main() {
@@ -92,27 +92,6 @@ class _ArticleListState extends State<ArticleListWidget> {
         },
       ),
     );
-  }
-}
-
-class LoadingDataWidget extends StatelessWidget {
-  const LoadingDataWidget({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: const <Widget>[
-            Padding(
-                padding: EdgeInsets.only(bottom: 8.0),
-                child: Text('Retrieving News Data')),
-            LinearProgressIndicator(
-              value: null,
-            )
-          ],
-        ));
   }
 }
 
