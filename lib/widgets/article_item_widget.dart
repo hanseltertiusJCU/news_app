@@ -24,6 +24,8 @@ class ArticleItemWidget extends StatelessWidget {
                   child: Image(
                     image: NetworkImageWithRetry(item.urlToImage ??
                         'http://diskannak.kabgarut.com/dhaassets/backend/images/no_image.jpg'),
+                    errorBuilder: (context, error, stackTrace) =>
+                        const Icon(Icons.error),
                   )),
               Text(
                 item.title ?? "",

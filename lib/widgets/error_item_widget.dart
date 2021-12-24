@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:news_app/functions/get_articles_data.dart';
+import 'package:http/http.dart' as http;
 
 class ErrorItemWidget extends StatelessWidget {
   final AsyncSnapshot snapshot;
@@ -23,7 +24,7 @@ class ErrorItemWidget extends StatelessWidget {
                       child: Text('${snapshot.error}'),
                     ),
                     ElevatedButton(
-                        onPressed: () => getArticlesData(),
+                        onPressed: () => getArticlesData(http.Client()),
                         child: const Text('Try Again'))
                   ],
                 ),

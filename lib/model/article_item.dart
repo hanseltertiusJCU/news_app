@@ -21,22 +21,44 @@ class ArticleItem {
    * 
    */
 
-  final SourceData? source;
+  final SourceData source;
   final String? author;
   final String? title;
   final String? description;
   final String? url;
   final String? urlToImage;
-  final String? publishedAt;
+  final DateTime publishedAt;
   final String? content;
 
   ArticleItem(
-      {this.source,
+      {required this.source,
       this.author,
       this.title,
       this.description,
       this.url,
       this.urlToImage,
-      this.publishedAt,
+      required this.publishedAt,
       this.content});
+
+  factory ArticleItem.fromJson(Map<String, dynamic> json) => ArticleItem(
+        source: SourceData.fromJson(json["source"]),
+        author: json["author"] ?? "null",
+        title: json["title"],
+        description: json["description"],
+        url: json["url"],
+        urlToImage: json["urlToImage"] ?? "null",
+        publishedAt: DateTime.parse(json["publishedAt"]),
+        content: json["content"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "source": source.toJson(),
+        "author": author ?? "null",
+        "title": title,
+        "description": description,
+        "url": url,
+        "urlToImage": urlToImage ?? "null",
+        "publishedAt": publishedAt.toIso8601String(),
+        "content": content,
+      };
 }

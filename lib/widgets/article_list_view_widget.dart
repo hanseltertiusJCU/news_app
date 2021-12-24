@@ -11,11 +11,11 @@ class ArticleListViewWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListView.separated(
         padding: const EdgeInsets.all(8.0),
-        itemCount: snapshot.data.length,
+        itemCount: snapshot.data.articles.length,
         separatorBuilder: (context, index) =>
             const Padding(padding: EdgeInsets.symmetric(vertical: 8.0)),
         itemBuilder: (context, index) {
-          return ArticleItemWidget(item: snapshot.data[index]);
+          return ArticleItemWidget(item: snapshot.data.articles[index]);
         });
   }
 }

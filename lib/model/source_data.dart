@@ -11,4 +11,14 @@ class SourceData {
   final String? name;
 
   SourceData({this.id, this.name});
+
+  factory SourceData.fromJson(Map<String, dynamic> json) => SourceData(
+        id: json["id"] ?? "null",
+        name: json["name"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "id": id ?? "null",
+        "name": name,
+      };
 }
